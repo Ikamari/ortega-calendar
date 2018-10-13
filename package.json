@@ -1,0 +1,44 @@
+{
+  "name": "ortega-calendar",
+  "version": "0.1.0",
+  "description": "",
+  "main": "./app/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ikamari/ortega-calendar.git"
+  },
+  "author": "Ikamari",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/Ikamari/ortega-calendar/issues"
+  },
+  "homepage": "https://github.com/Ikamari/ortega-calendar#readme",
+  "scripts": {
+    "watch": "webpack --watch"
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.2",
+    "react-axios": "^2.0.0",
+    "react-dom": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "css-loader": "^1.0.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^1.1.11",
+    "npm-install-webpack-plugin": "^4.0.5",
+    "style-loader": "^0.21.0",
+    "ttf-loader": "^1.0.2",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.2"
+  }
+}

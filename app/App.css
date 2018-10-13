@@ -1,0 +1,65 @@
+@font-face {
+    font-family: Arch;
+    src: url(./resources/fonts/Arch.ttf);
+}
+
+.app {
+    font-family: Arch, cursive, sans-serif;
+}
+
+.calculator:last-child {
+    margin-bottom: 0;
+}
+
+.button {
+    height: 24px;
+    min-width: 150px;
+    border: none;
+    border-bottom: 3px solid black;
+    background-color: transparent;
+    outline: none;
+    font-size: 20px;
+    font-family: Arch, cursive, sans-serif;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.button:hover {
+    background-color: lightgray;
+}
+
+.arrow-button-up {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+}
+
+.arrow-button-down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+.arrow-button-left {
+    transform: rotate(135deg);
+    -webkit-transform: rotate(135deg);
+}
+
+.arrow-button-right {
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+}
+
+.arrow-button-up, .arrow-button-down, .arrow-button-left, .arrow-button-right {
+    width: 10px;
+    height: 10px;
+    border: solid black;
+    border-width: 0 5px 5px 0;
+    outline: 1px solid black;
+    padding: 3px;
+    transition-duration: 0.3s;
+    cursor: pointer;
+}
+
+.arrow-button-up:hover, .arrow-button-down:hover, .arrow-button-left:hover, .arrow-button-right:hover {
+    border-color: skyblue;
+}
+
