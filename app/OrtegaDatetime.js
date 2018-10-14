@@ -1,3 +1,5 @@
+import { addDays } from './helpers/DateHelper'
+
 const ORTEGA_MONTHS = [
     'Доблести', 'Справедливости', 'Усердия', 'Мудрости', 'Умеренности', 'Искренности',
     'Верности', 'Щедрости', 'Порядка', 'Великодушия', 'Прощения', 'Владыки'
@@ -24,17 +26,21 @@ export default class OrtegaDatetime {
     minutes
     seconds
 
-    initialDateTime
-    previouslyUsedDateTime
+    initialRealDate
+    initialOrtegaDate
+    initialRealDateTime
+    previouslyUsedRealDateTime
 
-    constructor(ortegaDateStartFrom = '01.01.72', realStartDateFrom = '01.10.2018') {
-        const initialOrtegaDateParts = ortegaDateStartFrom.split('.')
-        const realStartDateParts     = realStartDateFrom.split('.')
+    constructor(ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018') {
+        const ortegaInitialDateParts = ortegaInitialDate.split('.')
+        const realInitialDateParts     = realInitialDate.split('.')
 
-        this.initialDay   = Number(initialOrtegaDateParts[0])
-        this.initialMonth = Number(initialOrtegaDateParts[1])
-        this.initialYear  = Number(initialOrtegaDateParts[2])
-        this.initialDateTime = new Date(Number(realStartDateParts[2]), Number(realStartDateParts[1]) - 1, Number(realStartDateParts[0]))
+        this.initialOrtegaDate   = ortegaInitialDate
+        this.initialRealDate     = realInitialDate
+        this.initialDay          = Number(ortegaInitialDateParts[0])
+        this.initialMonth        = Number(ortegaInitialDateParts[1])
+        this.initialYear         = Number(ortegaInitialDateParts[2])
+        this.initialRealDateTime = new Date(Number(realInitialDateParts[2]), Number(realInitialDateParts[1]) - 1, Number(realInitialDateParts[0]))
 
         this.update()
     }
@@ -43,15 +49,8 @@ export default class OrtegaDatetime {
         const currentDateTime = new Date()
 
         // Declare Ortega date on construct or update it when new day in reality has come
-        if (this.previouslyUsedDateTime === undefined || this.previouslyUsedDateTime.getDate() !== currentDateTime.getDate()) {
-            // Difference in milliseconds
-            const diffInRealTime = Math.abs(
-                (currentDateTime.getTime()      + currentDateTime.getTimezoneOffset()      * 60 * 1000) -
-                (this.initialDateTime.getTime() + this.initialDateTime.getTimezoneOffset() * 60 * 1000)
-            )
-            // Difference in real days
-            let days = Math.floor(diffInRealTime / (1000 * 3600 * 24));
-
+        if (this.previouslyUsedRealDateTime === undefined || this.previouslyUsedRealDateTime.getDate() !== currentDateTime.getDate()) {
+            let days = OrtegaDatetime.diffInDays(currentDateTime, this.initialRealDateTime);
             this.year  = this.initialYear  + Math.floor(days / 360)
             days %= 360;
             this.month = this.initialMonth + Math.floor(days / 30)
@@ -63,7 +62,11 @@ export default class OrtegaDatetime {
         this.minutes = currentDateTime.getUTCMinutes()
         this.seconds = currentDateTime.getUTCSeconds()
 
-        this.previouslyUsedDateTime = currentDateTime
+        this.previouslyUsedRealDateTime = currentDateTime
+    }
+
+    getRealDate(returnDateTime = false) {
+        return this.toRealDate(this.getDate(), this.initialOrtegaDate, this.initialRealDate, returnDateTime)
     }
 
     getDate() {
@@ -94,6 +97,39 @@ export default class OrtegaDatetime {
             case this.hours <= 24: {return ORTEGA_TEMPAS[7]}
         }
         return ORTEGA_TEMPAS[this.hours / 3]
+    }
+
+    static diffInDays(firstDate, secondDate) {
+        // Difference in milliseconds
+        const diffInMilliseconds = Math.abs(
+            (firstDate.getTime()  + firstDate.getTimezoneOffset()  * 60 * 1000) -
+            (secondDate.getTime() + secondDate.getTimezoneOffset() * 60 * 1000)
+        )
+        // Difference in real days
+        return Math.floor(diffInMilliseconds / (1000 * 3600 * 24));
+    }
+
+
+    static toRealDate(ortegaDate, ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', returnDateTime = false) {
+        const ortegaDateParts        = ortegaDate.split('.')
+        const ortegaInitialDateParts = ortegaInitialDate.split('.')
+        const realInitialDateParts   = realInitialDate.split('.')
+
+        // Get difference in days between specified and initial ortega date
+        const yearsDiff    = ortegaDateParts[2] - ortegaInitialDateParts[2]
+        const monthsDiff   = ortegaDateParts[1] - ortegaInitialDateParts[1]
+        const daysDiff     = ortegaDateParts[0] - ortegaInitialDateParts[0] + monthsDiff * 30 + yearsDiff * 360
+        const realDateTime = addDays(new Date(Number(realInitialDateParts[2]), Number(realInitialDateParts[1]) - 1, Number(realInitialDateParts[0])), daysDiff)
+
+        if (!returnDateTime) {
+            const
+                realDay   = realDateTime.getDate(),
+                realMonth = realDateTime.getMonth(),
+                realYear  = realDateTime.getFullYear()
+            return `${realDay > 9 ? '' : '0'}${realDay}.${realMonth > 9 ? '' : '0'}${realMonth}.${realYear > 9 ? '' : '0'}${realYear}`
+        }
+
+        return returnDateTime
     }
 }
 

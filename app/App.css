@@ -4,6 +4,11 @@
 }
 
 .app {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    margin: 0 auto;
+    font-size: 18px;
     font-family: Arch, cursive, sans-serif;
 }
 
@@ -49,11 +54,11 @@
 }
 
 .arrow-button-up, .arrow-button-down, .arrow-button-left, .arrow-button-right {
-    width: 10px;
-    height: 10px;
+    width: 20px;
+    height: 20px;
     border: solid black;
-    border-width: 0 5px 5px 0;
-    outline: 1px solid black;
+    border-width: 0 7px 7px 0;
+    outline: 2px solid black;
     padding: 3px;
     transition-duration: 0.3s;
     cursor: pointer;

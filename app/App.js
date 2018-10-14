@@ -1,23 +1,26 @@
 // React
-import React, { Component } from 'react';
+import React, { Component }  from 'react';
 // Datetime
-import OrtegaDatetime       from "./OrtegaDatetime";
+import OrtegaDatetime        from './OrtegaDatetime';
+// Containers
+import OrtegaCalendar        from './containers/OrtegaCalendar'
+// Components
+import OrtegaCurrentDateTime from './components/current-datetime/OrtegaCurrentDateTime'
 // Styles
-import styles               from './App.css'
+import styles                from './App.css'
 
 export default class App extends Component {
     constructor(props) {
         super(props)
-        const ortegaDatetime = new OrtegaDatetime()
-        this.ticker = setInterval(() => {
-            ortegaDatetime.update()
-            console.log(`${ortegaDatetime.getTime()} (${ortegaDatetime.getTempa()} темпа) ${ortegaDatetime.getDate()} (${ortegaDatetime.day} день месяца ${ortegaDatetime.getMonthName()}, ${ortegaDatetime.year} год)\n`)
-        }, 1000)
+        this.ortegaDatetime = new OrtegaDatetime()
+        setInterval(() => { this.ortegaDatetime.update() }, 1000)
     }
 
     render() {
         return(
             <div className={styles.app}>
+                <OrtegaCurrentDateTime ortegaDateTime={this.ortegaDatetime}/>
+                <OrtegaCalendar        ortegaDateTime={this.ortegaDatetime}/>
             </div>
         )
     }
