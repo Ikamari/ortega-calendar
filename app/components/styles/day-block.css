@@ -6,8 +6,6 @@
     color: skyblue;
     border: 2px solid rgba(100, 205, 255, 0.15);
     background-color: rgba(100, 205, 255, 0.15);
-    text-shadow: 0 0 10px blue, 0 0 5px blue;
-    vertical-align: unset;
     user-select: none;
     transition-duration: 450ms;
     cursor: pointer;
@@ -40,4 +38,28 @@
     font-size: 15px;
     text-align: center;
     user-select: text;
+}
+
+.event-mark {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background-color: skyblue;
+    border-radius: 18px;
+    box-shadow: 0 0 10px skyblue, 0 0 7px blue;
+    animation: pulse 1500ms infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }

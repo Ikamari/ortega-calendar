@@ -7,9 +7,13 @@ import styles                from './styles/day-block.css'
 
 export default class DayBlock extends Component {
     render() {
-        const { isCurrentDay, dayOfMonth, realDate } = this.props
+        const { isCurrentDay, hasEvent, dayOfMonth, realDate, action } = this.props
         return (
-            <div className={`${styles.wrapper} ${isCurrentDay ? styles['current-day'] : ''}`}>
+            <div
+                className = {`${styles.wrapper} ${isCurrentDay ? styles['current-day'] : ''}`}
+                onClick   = {action ? () => action() : () => {}}
+            >
+                { hasEvent ? <div className={styles['event-mark']} /> : null}
                 <div className={styles['day-of-month']}>{dayOfMonth}</div>
                 <TransitionGroup>
                     <CSSTransition
@@ -25,12 +29,15 @@ export default class DayBlock extends Component {
     }
 }
 
-DayBlock.defaultProps = {
-    isCurrentDay: false
-}
-
 DayBlock.propTypes = {
     isCurrentDay: PropTypes.bool,
+    hasEvent:     PropTypes.bool,
     dayOfMonth:   PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    realDate:     PropTypes.string.isRequired
+    realDate:     PropTypes.string.isRequired,
+    action:       PropTypes.func
+}
+
+DayBlock.defaultProps = {
+    isCurrentDay: false,
+    hasEvent:     false,
 }

@@ -10,21 +10,26 @@ import styles                       from './styles/month-days.css'
 
 export default class MonthDays extends Component {
     renderDays() {
-        const { currentDate, selectedMonth, selectedYear } = this.props
+        const { currentDate, selectedMonth, selectedYear, events, openEventsWindow } = this.props
         let daysTable = []
 
         for (let week = 0; week < 3; week++) {
             let days = []
             for (let dayOfWeek = 1; dayOfWeek <= 10; dayOfWeek++) {
-                const dayOfMonth    = 10 * week + dayOfWeek
-                const date          = `${dayOfMonth > 9 ? '' : '0'}${dayOfMonth}.${selectedMonth > 9 ? '' : '0'}${selectedMonth}.${selectedYear}`
-                const isCurrentDate = currentDate === date
+                const
+                    dayOfMonth    = 10 * week + dayOfWeek,
+                    date          = `${dayOfMonth > 9 ? '' : '0'}${dayOfMonth}.${selectedMonth > 9 ? '' : '0'}${selectedMonth}.${selectedYear}`,
+                    realDate      = OrtegaDateTime.toRealDate(date),
+                    isCurrentDate = currentDate === date,
+                    hasEvent      = realDate in events
                 days.push(
                     <DayBlock
-                        key={`calendar-day-${dayOfMonth}`}
-                        isCurrentDay={isCurrentDate}
-                        dayOfMonth={dayOfMonth}
-                        realDate={OrtegaDateTime.toRealDate(date)}
+                        key          = {`calendar-day-${dayOfMonth}`}
+                        isCurrentDay = {isCurrentDate}
+                        hasEvent     = {hasEvent}
+                        dayOfMonth   = {dayOfMonth}
+                        realDate     = {realDate}
+                        action       = {hasEvent ? () => openEventsWindow(realDate) : null}
                     />
                 )
             }
@@ -43,8 +48,14 @@ export default class MonthDays extends Component {
     }
 }
 
+MonthDays.defaultProps = {
+    events: {}
+}
+
 MonthDays.propTypes = {
-    currentDate:   PropTypes.string.isRequired,
-    selectedMonth: PropTypes.number.isRequired,
-    selectedYear:  PropTypes.number.isRequired
+    events:           PropTypes.object,
+    currentDate:      PropTypes.string.isRequired,
+    selectedMonth:    PropTypes.number.isRequired,
+    selectedYear:     PropTypes.number.isRequired,
+    openEventsWindow: PropTypes.func.isRequired
 }

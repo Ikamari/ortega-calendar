@@ -1,0 +1,51 @@
+.wrapper {
+    position: absolute;
+    top: 5px;
+    width: calc(100% - 35px);
+    height: calc(100% - 35px);
+    padding: 10px;
+    color: skyblue;
+    border: 2px solid rgba(100, 205, 255, 0.15);
+    background-color: rgba(100, 205, 255, 0.15);
+}
+
+.close-button {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    opacity: 0.3;
+    cursor: pointer;
+    transition-duration: 450ms;
+}
+.close-button:hover {
+    opacity: 1;
+}
+.close-button:before, .close-button:after {
+    position: absolute;
+    top: 0;
+    content: ' ';
+    height: 33px;
+    width: 2px;
+    background-color: skyblue;
+}
+.close-button:before {
+    transform: rotate(45deg);
+}
+.close-button:after {
+    transform: rotate(-45deg);
+}
+
+.title {
+    margin-bottom: 10px;
+    padding-right: 60px;
+    font-size: 26px;
+}
+
+.description {
+    white-space: pre;
+}
