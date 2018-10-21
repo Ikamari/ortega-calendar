@@ -18,7 +18,7 @@ export default class CurrentDateTime extends Component {
         const { ortegaDateTime } = this.props
         return (
             <div className={styles.wrapper}>
-                <div className={styles.label}>Текущая дата и время</div>
+                {/*<div className={styles.label}>Текущая дата и время</div>*/}
                 <div className={styles['datetime-wrapper']}>
                     <div className={styles.datetime}>
                         {`${ortegaDateTime.getTime()}, ${ortegaDateTime.day} день месяца ${ortegaDateTime.getMonthName()}, ${ortegaDateTime.year} год`}
