@@ -124,7 +124,7 @@ export default class OrtegaDatetime {
         if (!returnDateTime) {
             const
                 realDay   = realDateTime.getDate(),
-                realMonth = realDateTime.getMonth(),
+                realMonth = realDateTime.getMonth() + 1,
                 realYear  = realDateTime.getFullYear()
             return `${realDay > 9 ? '' : '0'}${realDay}.${realMonth > 9 ? '' : '0'}${realMonth}.${realYear > 9 ? '' : '0'}${realYear}`
         }

@@ -59,6 +59,7 @@ export default class OrtegaCalendar extends Component {
 
     render() {
         const { currentDate, selectedMonth, selectedYear } = this.state
+        console.log(this.props.ortegaDateTime)
         return (
             <div className={styles.wrapper}>
                 <MonthSelect selectedMonth={selectedMonth} selectedYear={selectedYear} prevMonth={() => this.prevMonth()} nextMonth={() => this.nextMonth()} />
