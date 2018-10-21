@@ -26,7 +26,7 @@ export default class App extends Component {
 
     uploadData() {
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'config.json');
+        xhr.open('GET', 'data/config.json');
 
         xhr.onload = () => {
             if (xhr.readyState === 4) {
