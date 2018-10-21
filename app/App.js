@@ -5,7 +5,7 @@ import OrtegaDatetime        from './OrtegaDatetime';
 // Containers
 import OrtegaCalendar        from './containers/OrtegaCalendar'
 // Components
-import OrtegaCurrentDateTime from './components/current-datetime/OrtegaCurrentDateTime'
+import OrtegaCurrentDateTime from './components/OrtegaCurrentDateTime'
 // Styles
 import styles                from './App.css'
 

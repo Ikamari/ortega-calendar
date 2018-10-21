@@ -1,0 +1,38 @@
+.wrapper {
+    position: relative;
+    width: 85px;
+    height: 85px;
+    color: skyblue;
+    border: 2px solid rgba(100, 205, 255, 0.15);
+    background-color: rgba(100, 205, 255, 0.15);
+    text-shadow: 0 0 10px blue, 0 0 5px blue;
+    vertical-align: unset;
+    user-select: none;
+    transition-duration: 450ms;
+    cursor: pointer;
+}
+
+.wrapper:hover {
+    border: 2px solid rgba(100, 205, 255, 0.85);
+}
+
+.current-day {
+    background-color: rgba(100, 205, 255, 0.45);
+}
+
+.day-of-month {
+    position: absolute;
+    width: 100%;
+    font-size: 42px;
+    line-height: 65px;
+    text-align: center;
+}
+
+.real-date {
+    width: 100%;
+    position: absolute;
+    bottom: 5px;
+    font-size: 14px;
+    text-align: center;
+    user-select: text;
+}

@@ -13,7 +13,9 @@ export default class MonthSelect extends Component {
         return (
             <div className={styles.wrapper}>
                 <button type='button' className={appStyles["arrow-button-left"]} onClick={prevMonth}/>
-                <div className={styles.text}>{`Месяц ${ORTEGA_MONTHS[selectedMonth - 1]}, ${selectedYear} год`}</div>
+                <div className={styles['text-wrapper']}>
+                    <div className={styles.text}>{`Месяц ${ORTEGA_MONTHS[selectedMonth - 1]}, ${selectedYear} год`}</div>
+                </div>
                 <button type='button' className={appStyles["arrow-button-right"]} onClick={nextMonth}/>
             </div>
         )

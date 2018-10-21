@@ -3,10 +3,15 @@
     src: url(./resources/fonts/Arch.ttf);
 }
 
+@font-face {
+    font-family: Digital2;
+    src: url(./resources/fonts/Digital2.otf);
+}
+
 .app {
     display: flex;
     flex-direction: column;
-    width: 800px;
+    width: 950px;
     margin: 0 auto;
     font-size: 18px;
     font-family: Arch, cursive, sans-serif;
@@ -66,5 +71,32 @@
 
 .arrow-button-up:hover, .arrow-button-down:hover, .arrow-button-left:hover, .arrow-button-right:hover {
     border-color: skyblue;
+}
+
+:global .fade-appear {
+    opacity: 0;
+}
+
+:global .fade-appear.fade-appear-active {
+    opacity: 1;
+    transition: opacity 450ms;
+}
+
+:global .fade-enter {
+    opacity: 0;
+}
+
+:global .fade-enter-active {
+    opacity: 1;
+    transition: opacity 450ms;
+}
+
+:global .fade-exit {
+    opacity: 1;
+}
+
+:global .fade-exit-active {
+    opacity: 0;
+    transition: opacity 450ms;
 }
 

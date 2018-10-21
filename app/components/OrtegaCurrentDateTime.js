@@ -2,9 +2,9 @@
 import React, { Component } from 'react'
 import PropTypes            from 'prop-types'
 // DateTime
-import OrtegaDateTime       from '../../OrtegaDatetime'
+import OrtegaDateTime       from '../OrtegaDatetime'
 // Styles
-import styles from './styles/current-datetime.css'
+import styles               from './styles/current-datetime.css'
 
 export default class CurrentDateTime extends Component {
     constructor(props) {
@@ -18,8 +18,12 @@ export default class CurrentDateTime extends Component {
         const { ortegaDateTime } = this.props
         return (
             <div className={styles.wrapper}>
-                <div>Текущая дата и время:</div>
-                <div>{`${ortegaDateTime.getTime()}, ${ortegaDateTime.day} день месяца ${ortegaDateTime.getMonthName()}, ${ortegaDateTime.year} год`}</div>
+                <div className={styles.label}>Текущая дата и время</div>
+                <div className={styles['datetime-wrapper']}>
+                    <div className={styles.datetime}>
+                        {`${ortegaDateTime.getTime()}, ${ortegaDateTime.day} день месяца ${ortegaDateTime.getMonthName()}, ${ortegaDateTime.year} год`}
+                        </div>
+                </div>
             </div>
         )
     }

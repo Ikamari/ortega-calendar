@@ -9,7 +9,28 @@
     font-size: 24px;
 }
 
-.text {
+.text-wrapper {
+    position: relative;
+    display: flex;
     width: 400px;
+    height: 8px;
+    border-bottom: 59px solid rgb(50, 50, 50);
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    justify-content: center;
+}
+
+.text {
+    position: absolute;
+    height: 12px;
+    width: 390px;
+    border-bottom: 55px solid black;
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    line-height: 75px;
+    font-size: 26px;
     text-align: center;
+    color: skyblue;
+    text-shadow: 0 0 10px blue, 0 0 5px blue;
+    z-index: 3;
 }

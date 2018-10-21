@@ -5,7 +5,11 @@ import PropTypes            from 'prop-types'
 import OrtegaDateTime       from '../OrtegaDatetime'
 // Containers
 import MonthSelect          from './MonthSelect'
-import Days                 from './Days'
+import MonthDays            from './MonthDays'
+// Styles
+import styles               from './styles/calendar.css'
+
+const MIN_MONTH = 1, MAX_MONTH = 12
 
 export default class OrtegaCalendar extends Component {
     constructor(props) {
@@ -31,8 +35,8 @@ export default class OrtegaCalendar extends Component {
 
     prevMonth() {
         let previousMonth = this.state.selectedMonth - 1, year = this.state.selectedYear
-        if (previousMonth < 1) {
-            previousMonth = 12
+        if (previousMonth < MIN_MONTH) {
+            previousMonth = MAX_MONTH
             year--
         }
         this.setState({
@@ -43,8 +47,8 @@ export default class OrtegaCalendar extends Component {
 
     nextMonth() {
         let nextMonth = this.state.selectedMonth + 1, year = this.state.selectedYear
-        if (nextMonth > 12) {
-            nextMonth = 1
+        if (nextMonth > MAX_MONTH) {
+            nextMonth = MIN_MONTH
             year++
         }
         this.setState({
@@ -56,10 +60,10 @@ export default class OrtegaCalendar extends Component {
     render() {
         const { currentDate, selectedMonth, selectedYear } = this.state
         return (
-            <Fragment>
+            <div className={styles.wrapper}>
                 <MonthSelect selectedMonth={selectedMonth} selectedYear={selectedYear} prevMonth={() => this.prevMonth()} nextMonth={() => this.nextMonth()} />
-                <Days        currentDate={currentDate} selectedMonth={selectedMonth} selectedYear={selectedYear} />
-            </Fragment>
+                <MonthDays   currentDate={currentDate} selectedMonth={selectedMonth} selectedYear={selectedYear} />
+            </div>
         )
     }
 }
