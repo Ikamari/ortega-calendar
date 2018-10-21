@@ -50,12 +50,12 @@ export default class OrtegaDatetime {
 
         // Declare Ortega date on construct or update it when new day in reality has come
         if (this.previouslyUsedRealDateTime === undefined || this.previouslyUsedRealDateTime.getDate() !== currentDateTime.getDate()) {
-            let days = OrtegaDatetime.diffInDays(currentDateTime, this.initialRealDateTime);
+            let days = OrtegaDatetime.diffInDays(currentDateTime, this.initialRealDateTime) + this.initialDay;
             this.year  = this.initialYear  + Math.floor(days / 360)
             days %= 360;
             this.month = this.initialMonth + Math.floor(days / 30)
             days %= 30;
-            this.day   = this.initialDay   + days
+            this.day   = days
         }
 
         this.hours   = currentDateTime.getUTCHours()
@@ -109,6 +109,9 @@ export default class OrtegaDatetime {
         return Math.floor(diffInMilliseconds / (1000 * 3600 * 24));
     }
 
+    toRealDate(ortegaDate, returnDateTime = false) {
+        return OrtegaDatetime.toRealDate(ortegaDate, this.initialOrtegaDate, this.initialRealDate, returnDateTime)
+    }
 
     static toRealDate(ortegaDate, ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', returnDateTime = false) {
         const ortegaDateParts        = ortegaDate.split('.')

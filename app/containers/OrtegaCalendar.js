@@ -11,7 +11,6 @@ import MonthSelect          from './MonthSelect'
 import MonthDays            from './MonthDays'
 // Styles
 import styles               from './styles/calendar.css'
-import daysStyles           from './styles/month-days.css'
 
 const MIN_MONTH = 1, MAX_MONTH = 12
 
@@ -21,12 +20,13 @@ export default class OrtegaCalendar extends Component {
 
         const { ortegaDateTime } = props
         this.state = {
-            currentDay:    ortegaDateTime.day,
-            currentDate:   ortegaDateTime.getDate(),
-            selectedDay:   ortegaDateTime.day,
-            selectedMonth: ortegaDateTime.month,
-            selectedYear:  ortegaDateTime.year,
-            eventsDate:    null
+            currentDay:      ortegaDateTime.day,
+            currentDate:     ortegaDateTime.getDate(),
+            selectedDay:     ortegaDateTime.day,
+            selectedMonth:   ortegaDateTime.month,
+            selectedYear:    ortegaDateTime.year,
+            eventOrtegaDate: null,
+            eventRealDate:   null
         }
 
         setInterval(() => {
@@ -62,21 +62,23 @@ export default class OrtegaCalendar extends Component {
         })
     }
 
-    openEventsWindow(date) {
+    openEventsWindow(ortegaDate, realDate) {
         this.setState({
-            eventsDate: date
+            eventOrtegaDate: ortegaDate,
+            eventRealDate: realDate
         })
     }
 
     closeEventsWindow() {
         this.setState({
-            eventsDate: null
+            eventOrtegaDate: null,
+            eventRealDate: null
         })
     }
 
     render() {
-        const { events } = this.props
-        const { currentDate, selectedMonth, selectedYear, eventsDate } = this.state
+        const { events, ortegaDateTime } = this.props
+        const { selectedMonth, selectedYear, eventOrtegaDate, eventRealDate } = this.state
         return (
             <div className={styles.wrapper}>
                 <MonthSelect
@@ -87,22 +89,24 @@ export default class OrtegaCalendar extends Component {
                 />
                 <TransitionGroup className={styles["second-wrapper"]}>
                     <CSSTransition
-                        key        = {`selected-date-${eventsDate || 'none'}`}
+                        key        = {`selected-date-${eventRealDate || 'none'}`}
                         timeout    = {450}
                         classNames = 'fade'
                     >
                         {
-                            eventsDate ?
+                            eventRealDate ?
                                 <EventsWindow
-                                    events={events[eventsDate]}
+                                    ortegaDate={eventOrtegaDate}
+                                    realDate={eventRealDate}
+                                    events={events[eventRealDate]}
                                     closeWindow={() => this.closeEventsWindow()}
                                 /> :
                                 <MonthDays
-                                    currentDate={currentDate}
+                                    ortegaDateTime={ortegaDateTime}
                                     selectedMonth={selectedMonth}
                                     selectedYear={selectedYear}
                                     events={events}
-                                    openEventsWindow={(date) => this.openEventsWindow(date)}
+                                    openEventsWindow={(ortegaDate, realDate) => this.openEventsWindow(ortegaDate, realDate)}
                                 />
                         }
                     </CSSTransition>

@@ -1,5 +1,5 @@
 // React
-import React, {Component, Fragment} from 'react'
+import React, { Component }         from 'react'
 import PropTypes                    from 'prop-types'
 // DateTime
 import OrtegaDateTime               from '../OrtegaDatetime'
@@ -10,7 +10,8 @@ import styles                       from './styles/month-days.css'
 
 export default class MonthDays extends Component {
     renderDays() {
-        const { currentDate, selectedMonth, selectedYear, events, openEventsWindow } = this.props
+        const { ortegaDateTime, selectedMonth, selectedYear, events, openEventsWindow } = this.props
+        const currentDate = ortegaDateTime.getDate()
         let daysTable = []
 
         for (let week = 0; week < 3; week++) {
@@ -19,7 +20,7 @@ export default class MonthDays extends Component {
                 const
                     dayOfMonth    = 10 * week + dayOfWeek,
                     date          = `${dayOfMonth > 9 ? '' : '0'}${dayOfMonth}.${selectedMonth > 9 ? '' : '0'}${selectedMonth}.${selectedYear}`,
-                    realDate      = OrtegaDateTime.toRealDate(date),
+                    realDate      = ortegaDateTime.toRealDate(date),
                     isCurrentDate = currentDate === date,
                     hasEvent      = realDate in events
                 days.push(
@@ -29,7 +30,7 @@ export default class MonthDays extends Component {
                         hasEvent     = {hasEvent}
                         dayOfMonth   = {dayOfMonth}
                         realDate     = {realDate}
-                        action       = {hasEvent ? () => openEventsWindow(realDate) : null}
+                        action       = {hasEvent ? () => openEventsWindow(date, realDate) : null}
                     />
                 )
             }
@@ -54,7 +55,7 @@ MonthDays.defaultProps = {
 
 MonthDays.propTypes = {
     events:           PropTypes.object,
-    currentDate:      PropTypes.string.isRequired,
+    ortegaDateTime:   PropTypes.instanceOf(OrtegaDateTime),
     selectedMonth:    PropTypes.number.isRequired,
     selectedYear:     PropTypes.number.isRequired,
     openEventsWindow: PropTypes.func.isRequired
