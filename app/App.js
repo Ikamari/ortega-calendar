@@ -32,8 +32,8 @@ export default class App extends Component {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     try {
-                        const { ortegaInitialDate, realInitialDate, events } = JSON.parse(xhr.responseText)
-                        this.ortegaDatetime = new OrtegaDatetime(ortegaInitialDate, realInitialDate)
+                        const { ortegaInitialDate, realInitialDate, timeOffset, events } = JSON.parse(xhr.responseText)
+                        this.ortegaDatetime = new OrtegaDatetime(ortegaInitialDate, realInitialDate, timeOffset)
                         this.calendarEvents = events
                         setInterval(() => { this.ortegaDatetime.update() }, 1000)
                         this.setState({

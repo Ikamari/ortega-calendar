@@ -12,6 +12,7 @@ export default class MonthDays extends Component {
     renderDays() {
         const { ortegaDateTime, selectedMonth, selectedYear, events, openEventsWindow } = this.props
         const currentDate = ortegaDateTime.getDate()
+        const currentTime = ortegaDateTime.getTime()
         let daysTable = []
 
         for (let week = 0; week < 3; week++) {
@@ -20,7 +21,7 @@ export default class MonthDays extends Component {
                 const
                     dayOfMonth    = 10 * week + dayOfWeek,
                     date          = `${dayOfMonth > 9 ? '' : '0'}${dayOfMonth}.${selectedMonth > 9 ? '' : '0'}${selectedMonth}.${selectedYear}`,
-                    realDate      = ortegaDateTime.toRealDate(date),
+                    realDate      = ortegaDateTime.toRealDateTime(`${date} ${currentTime}`),
                     isCurrentDate = currentDate === date,
                     hasEvent      = realDate in events
                 days.push(

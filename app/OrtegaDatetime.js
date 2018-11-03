@@ -1,4 +1,4 @@
-import { addDays } from './helpers/DateHelper'
+import { addDays, addHours } from './helpers/DateHelper'
 
 const ORTEGA_MONTHS = [
     'Доблести', 'Справедливости', 'Усердия', 'Мудрости', 'Умеренности', 'Искренности',
@@ -25,13 +25,14 @@ export default class OrtegaDatetime {
     hours
     minutes
     seconds
+    timeOffset
 
     initialRealDate
     initialOrtegaDate
     initialRealDateTime
     previouslyUsedRealDateTime
 
-    constructor(ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018') {
+    constructor(ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', timeOffset = 0) {
         const ortegaInitialDateParts = ortegaInitialDate.split('.')
         const realInitialDateParts     = realInitialDate.split('.')
 
@@ -41,12 +42,13 @@ export default class OrtegaDatetime {
         this.initialMonth        = Number(ortegaInitialDateParts[1])
         this.initialYear         = Number(ortegaInitialDateParts[2])
         this.initialRealDateTime = new Date(Number(realInitialDateParts[2]), Number(realInitialDateParts[1]) - 1, Number(realInitialDateParts[0]))
+        this.timeOffset          = timeOffset
 
         this.update()
     }
 
     update() {
-        const currentDateTime = new Date()
+        const currentDateTime = addHours(new Date(), this.timeOffset)
 
         // Declare Ortega date on construct or update it when new day in reality has come
         if (this.previouslyUsedRealDateTime === undefined || this.previouslyUsedRealDateTime.getDate() !== currentDateTime.getDate()) {
@@ -65,7 +67,7 @@ export default class OrtegaDatetime {
         this.previouslyUsedRealDateTime = currentDateTime
     }
 
-    getRealDate(returnDateTime = false) {
+    getRealDateTime(returnDateTime = false) {
         return this.toRealDate(this.getDate(), this.initialOrtegaDate, this.initialRealDate, returnDateTime)
     }
 
@@ -109,12 +111,17 @@ export default class OrtegaDatetime {
         return Math.floor(diffInMilliseconds / (1000 * 3600 * 24));
     }
 
-    toRealDate(ortegaDate, returnDateTime = false) {
-        return OrtegaDatetime.toRealDate(ortegaDate, this.initialOrtegaDate, this.initialRealDate, returnDateTime)
+    toRealDateTime(ortegaDateTime, returnDateTime = false) {
+        return OrtegaDatetime.toRealDateTime(ortegaDateTime, this.initialOrtegaDate, this.initialRealDate, returnDateTime, this.timeOffset)
     }
 
-    static toRealDate(ortegaDate, ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', returnDateTime = false) {
-        const ortegaDateParts        = ortegaDate.split('.')
+    static toRealDateTime(ortegaDateTime, ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', returnDateTime = false, timeOffset = 0) {
+        // "10.10.72 10:11:55" --> ["10.10.72", "10:11:55"]
+        const ortegaDateTimeParts    = ortegaDateTime.split(' ')
+        // "10.10.72"          --> ["10", "10", "72"]
+        const ortegaDateParts        = ortegaDateTimeParts[0].split('.')
+        // "10:11:55"          --> ["10", "11", "55"]
+        const ortegaTimeParts        = ortegaDateTimeParts[1].split(':')
         const ortegaInitialDateParts = ortegaInitialDate.split('.')
         const realInitialDateParts   = realInitialDate.split('.')
 
@@ -122,7 +129,20 @@ export default class OrtegaDatetime {
         const yearsDiff    = ortegaDateParts[2] - ortegaInitialDateParts[2]
         const monthsDiff   = ortegaDateParts[1] - ortegaInitialDateParts[1]
         const daysDiff     = ortegaDateParts[0] - ortegaInitialDateParts[0] + monthsDiff * 30 + yearsDiff * 360
-        const realDateTime = addDays(new Date(Number(realInitialDateParts[2]), Number(realInitialDateParts[1]) - 1, Number(realInitialDateParts[0])), daysDiff)
+        const realDateTime = addHours(
+            addDays(
+                new Date(
+                    Number(realInitialDateParts[2]),
+                    Number(realInitialDateParts[1]) - 1,
+                    Number(realInitialDateParts[0]),
+                    ortegaTimeParts[0],
+                    ortegaTimeParts[1],
+                    ortegaTimeParts[2]
+                ),
+                daysDiff
+            ),
+            timeOffset * -1
+        )
 
         if (!returnDateTime) {
             const
