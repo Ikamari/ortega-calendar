@@ -1,6 +1,7 @@
 // React
 import React, { Component }         from 'react'
 import PropTypes                    from 'prop-types'
+import { datePartsToDate, dateTimeToDate } from '../helpers/DateHelper'
 // DateTime
 import OrtegaDateTime               from '../OrtegaDatetime'
 // Components
@@ -20,18 +21,21 @@ export default class MonthDays extends Component {
             for (let dayOfWeek = 1; dayOfWeek <= 10; dayOfWeek++) {
                 const
                     dayOfMonth    = 10 * week + dayOfWeek,
-                    date          = `${dayOfMonth > 9 ? '' : '0'}${dayOfMonth}.${selectedMonth > 9 ? '' : '0'}${selectedMonth}.${selectedYear}`,
-                    realDate      = ortegaDateTime.toRealDateTime(`${date} ${currentTime}`),
+                    date          = datePartsToDate(dayOfMonth, selectedMonth, selectedYear),
+                    realDateTime  = ortegaDateTime.toRealDateTime(`${date} ${currentTime}`, true),
+                    realDate      = dateTimeToDate(realDateTime),
                     isCurrentDate = currentDate === date,
                     hasEvent      = realDate in events
                 days.push(
                     <DayBlock
-                        key          = {`calendar-day-${dayOfMonth}`}
-                        isCurrentDay = {isCurrentDate}
-                        hasEvent     = {hasEvent}
-                        dayOfMonth   = {dayOfMonth}
-                        realDate     = {realDate}
-                        action       = {hasEvent ? () => openEventsWindow(date, realDate) : null}
+                        key            = {`calendar-day-${dayOfMonth}`}
+                        isCurrentDay   = {isCurrentDate}
+                        hasEvent       = {hasEvent}
+                        dayOfMonth     = {dayOfMonth}
+                        realDateTime   = {realDateTime}
+                        startOfDayTime = {ortegaDateTime.startOfDayInRealTime}
+                        endOfDayTime   = {ortegaDateTime.endOfDayInRealTime}
+                        action         = {hasEvent ? () => openEventsWindow(date, realDate) : null}
                     />
                 )
             }

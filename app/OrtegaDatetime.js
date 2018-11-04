@@ -1,4 +1,4 @@
-import { addDays, addHours } from './helpers/DateHelper'
+import { addDays, addHours, datePartsToDate } from './helpers/DateHelper'
 
 const ORTEGA_MONTHS = [
     'Доблести', 'Справедливости', 'Усердия', 'Мудрости', 'Умеренности', 'Искренности',
@@ -31,10 +31,12 @@ export default class OrtegaDatetime {
     initialOrtegaDate
     initialRealDateTime
     previouslyUsedRealDateTime
+    startOfDayInRealTime
+    endOfDayInRealTime
 
     constructor(ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', timeOffset = 0) {
         const ortegaInitialDateParts = ortegaInitialDate.split('.')
-        const realInitialDateParts     = realInitialDate.split('.')
+        const realInitialDateParts   = realInitialDate.split('.')
 
         this.initialOrtegaDate   = ortegaInitialDate
         this.initialRealDate     = realInitialDate
@@ -44,6 +46,17 @@ export default class OrtegaDatetime {
         this.initialRealDateTime = new Date(Number(realInitialDateParts[2]), Number(realInitialDateParts[1]) - 1, Number(realInitialDateParts[0]))
         this.timeOffset          = timeOffset
 
+        // Calculate in which time ortega day will start in real time
+        if (timeOffset > 12 || timeOffset < -12) throw 'По непонятным причинам кто-то выставил неправильный "оффсет"'
+        const hoursDifference = Math.abs(((new Date()).getTimezoneOffset() / 60 * -1) - timeOffset)
+        if (hoursDifference == 0) {
+            this.startOfDayInRealTime = '00:00'
+            this.endOfDayInRealTime   = '23:59'
+        } else {
+            const startOfDayInRealTime = 24 - hoursDifference
+            this.startOfDayInRealTime = `${startOfDayInRealTime > 9 ? '' : '0'}${startOfDayInRealTime}:00`
+            this.endOfDayInRealTime   = `${startOfDayInRealTime - 1 > 9 ? '' : '0'}${startOfDayInRealTime - 1}:59`
+        }
         this.update()
     }
 
@@ -52,8 +65,7 @@ export default class OrtegaDatetime {
 
         // Declare Ortega date on construct or update it when new day in reality has come
         if (this.previouslyUsedRealDateTime === undefined || this.previouslyUsedRealDateTime.getDate() !== currentDateTime.getDate()) {
-            let days = OrtegaDatetime.diffInDays(currentDateTime, this.initialRealDateTime) + 1;
-            console.log(days)
+            let days = OrtegaDatetime.diffInDays(currentDateTime, this.initialRealDateTime) + this.initialDay;
             this.year  = this.initialYear  + Math.floor(days / 360)
             days %= 360;
             this.month = this.initialMonth + Math.floor(days / 30)

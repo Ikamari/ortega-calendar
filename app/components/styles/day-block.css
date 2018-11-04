@@ -1,7 +1,7 @@
 .wrapper {
     position: relative;
     width: 82px;
-    height: 82px;
+    height: 132px;
     margin-right: 5px;
     color: skyblue;
     border: 2px solid rgba(100, 205, 255, 0.15);
@@ -27,7 +27,7 @@
     position: absolute;
     width: 100%;
     font-size: 42px;
-    line-height: 65px;
+    line-height: 52px;
     text-align: center;
 }
 
@@ -42,8 +42,8 @@
 
 .event-mark {
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 4px;
+    right: 4px;
     width: 8px;
     height: 8px;
     background-color: skyblue;
