@@ -10,8 +10,9 @@ import OrtegaCurrentDateTime from './components/OrtegaCurrentDateTime'
 import styles                from './App.css'
 
 export default class App extends Component {
-    ortegaDatetime = null
-    calendarEvents = null
+    ortegaDatetime   = null
+    calendarEvents   = null
+    calendarHolidays = null
 
     constructor(props) {
         super(props)
@@ -32,9 +33,10 @@ export default class App extends Component {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     try {
-                        const { ortegaInitialDate, realInitialDate, timeOffset, events } = JSON.parse(xhr.responseText)
+                        const { ortegaInitialDate, realInitialDate, timeOffset, events, holidays } = JSON.parse(xhr.responseText)
                         this.ortegaDatetime = new OrtegaDatetime(ortegaInitialDate, realInitialDate, timeOffset)
-                        this.calendarEvents = events
+                        this.calendarEvents = events || {}
+                        this.calendarHolidays = holidays || {}
                         setInterval(() => { this.ortegaDatetime.update() }, 1000)
                         this.setState({
                             dataUploaded: true
@@ -74,7 +76,7 @@ export default class App extends Component {
                                 'Кто-то сломал конфиг. :\\' :
                                 <Fragment>
                                     <OrtegaCurrentDateTime ortegaDateTime={this.ortegaDatetime} />
-                                    <OrtegaCalendar        ortegaDateTime={this.ortegaDatetime} events={this.calendarEvents} />
+                                    <OrtegaCalendar        ortegaDateTime={this.ortegaDatetime} events={this.calendarEvents} holidays={this.calendarHolidays}/>
                                 </Fragment>
                         ) : (uploadFailed ? 'Данные о календаре недоступны.' : 'Загрузка данных...')
                 }

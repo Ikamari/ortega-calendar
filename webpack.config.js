@@ -6,7 +6,7 @@ module.exports = {
     entry: {
         'main': './app/index.js'
     },
-    watch: true,
+    watch: false,
     mode: "development",
     output: {
         path: __dirname + '/public',

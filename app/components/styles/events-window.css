@@ -10,6 +10,8 @@
     border: 2px solid rgba(100, 205, 255, 0.15);
     background-color: rgba(100, 205, 255, 0.15);
     overflow-y: scroll;
+    scrollbar-color: skyblue transparent;
+    scrollbar-width: thin;
 }
 
 .wrapper::-webkit-scrollbar {
@@ -26,7 +28,7 @@
 }
 
 .close-button {
-    position: fixed;
+    position: absolute;
     align-self: flex-end;
     width: 32px;
     height: 32px;
@@ -67,4 +69,12 @@
 .description {
     margin-top: 10px;
     white-space: pre-wrap;
+}
+
+.description b {
+    letter-spacing: 1px;
+}
+
+.description hr {
+    border-color: rgb(135, 206, 235)
 }

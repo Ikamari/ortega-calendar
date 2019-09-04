@@ -5,11 +5,11 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 // Helpers
 import { addDays, dateTimeToDate } from '../helpers/DateHelper'
 // Styles
-import styles                from './styles/day-block.css'
+import styles from './styles/day-block.css'
 
 export default class DayBlock extends Component {
     render() {
-        const { isCurrentDay, hasEvent, dayOfMonth, realDateTime, startOfDayTime, endOfDayTime, action } = this.props
+        const { isCurrentDay, hasEvent, hasHoliday, dayOfMonth, realDateTime, startOfDayTime, endOfDayTime, action } = this.props
         const
             nextDay  = addDays(realDateTime, 1),
             fromDate = dateTimeToDate(realDateTime),
@@ -19,7 +19,7 @@ export default class DayBlock extends Component {
                 className = {`${styles.wrapper} ${isCurrentDay ? styles['current-day'] : ''}`}
                 onClick   = {action ? () => action() : () => {}}
             >
-                { hasEvent ? <div className={styles['event-mark']} /> : null}
+                { hasEvent || hasHoliday ? <div className={styles['event-mark']} /> : null}
                 <div className={styles['day-of-month']}>{dayOfMonth}</div>
                 <TransitionGroup>
                     <CSSTransition
@@ -44,6 +44,7 @@ export default class DayBlock extends Component {
 DayBlock.propTypes = {
     isCurrentDay:   PropTypes.bool,
     hasEvent:       PropTypes.bool,
+    hasHoliday:     PropTypes.bool,
     dayOfMonth:     PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     realDateTime:   PropTypes.object.isRequired,
     startOfDayTime: PropTypes.string.isRequired,
@@ -54,4 +55,5 @@ DayBlock.propTypes = {
 DayBlock.defaultProps = {
     isCurrentDay: false,
     hasEvent:     false,
+    hasHoliday:   false
 }

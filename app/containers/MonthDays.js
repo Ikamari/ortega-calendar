@@ -11,7 +11,7 @@ import styles                       from './styles/month-days.css'
 
 export default class MonthDays extends Component {
     renderDays() {
-        const { ortegaDateTime, selectedMonth, selectedYear, events, openEventsWindow } = this.props
+        const { ortegaDateTime, selectedMonth, selectedYear, events, holidays, openEventsWindow } = this.props
         const currentDate = ortegaDateTime.getDate()
         const currentTime = ortegaDateTime.getTime()
         let daysTable = []
@@ -21,21 +21,24 @@ export default class MonthDays extends Component {
             for (let dayOfWeek = 1; dayOfWeek <= 10; dayOfWeek++) {
                 const
                     dayOfMonth    = 10 * week + dayOfWeek,
+                    shortDate     = datePartsToDate(dayOfMonth, selectedMonth),
                     date          = datePartsToDate(dayOfMonth, selectedMonth, selectedYear),
                     realDateTime  = ortegaDateTime.toRealDateTime(`${date} ${currentTime}`, true),
                     realDate      = dateTimeToDate(realDateTime),
                     isCurrentDate = currentDate === date,
-                    hasEvent      = realDate in events
+                    hasEvent      = realDate in events,
+                    hasHoliday    = shortDate in holidays
                 days.push(
                     <DayBlock
                         key            = {`calendar-day-${dayOfMonth}`}
                         isCurrentDay   = {isCurrentDate}
                         hasEvent       = {hasEvent}
+                        hasHoliday     = {hasHoliday}
                         dayOfMonth     = {dayOfMonth}
                         realDateTime   = {realDateTime}
                         startOfDayTime = {ortegaDateTime.startOfDayInRealTime}
                         endOfDayTime   = {ortegaDateTime.endOfDayInRealTime}
-                        action         = {hasEvent ? () => openEventsWindow(date, realDate) : null}
+                        action         = {hasEvent || hasHoliday ? () => openEventsWindow(date, shortDate, realDate) : null}
                     />
                 )
             }
@@ -60,6 +63,7 @@ MonthDays.defaultProps = {
 
 MonthDays.propTypes = {
     events:           PropTypes.object,
+    holidays:         PropTypes.object,
     ortegaDateTime:   PropTypes.instanceOf(OrtegaDateTime),
     selectedMonth:    PropTypes.number.isRequired,
     selectedYear:     PropTypes.number.isRequired,

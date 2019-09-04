@@ -25,8 +25,9 @@ export default class OrtegaCalendar extends Component {
             selectedDay:     ortegaDateTime.day,
             selectedMonth:   ortegaDateTime.month,
             selectedYear:    ortegaDateTime.year,
-            eventOrtegaDate: null,
-            eventRealDate:   null
+            selectedShortDate:  null,
+            selectedOrtegaDate: null,
+            selectedRealDate:   null
         }
 
         setInterval(() => {
@@ -62,23 +63,25 @@ export default class OrtegaCalendar extends Component {
         })
     }
 
-    openEventsWindow(ortegaDate, realDate) {
+    openEventsWindow(ortegaDate, shortOrtegaDate, realDate) {
         this.setState({
-            eventOrtegaDate: ortegaDate,
-            eventRealDate: realDate
+            selectedOrtegaDate: ortegaDate,
+            selectedShortDate:  shortOrtegaDate,
+            selectedRealDate:   realDate
         })
     }
 
     closeEventsWindow() {
         this.setState({
-            eventOrtegaDate: null,
-            eventRealDate: null
+            selectedOrtegaDate: null,
+            selectedRealDate:   null,
+            selectedShortDate:  null
         })
     }
 
     render() {
-        const { events, ortegaDateTime } = this.props
-        const { selectedMonth, selectedYear, eventOrtegaDate, eventRealDate } = this.state
+        const { events, holidays, ortegaDateTime } = this.props
+        const { selectedMonth, selectedYear, selectedOrtegaDate, selectedShortDate, selectedRealDate } = this.state
         return (
             <div className={styles.wrapper}>
                 <MonthSelect
@@ -89,16 +92,17 @@ export default class OrtegaCalendar extends Component {
                 />
                 <TransitionGroup className={styles["second-wrapper"]}>
                     <CSSTransition
-                        key        = {`selected-date-${eventRealDate || 'none'}`}
+                        key        = {`selected-date-${selectedRealDate || 'none'}`}
                         timeout    = {450}
                         classNames = 'fade'
                     >
                         {
-                            eventRealDate ?
+                            selectedRealDate ?
                                 <EventsWindow
-                                    ortegaDate={eventOrtegaDate}
-                                    realDate={eventRealDate}
-                                    events={events[eventRealDate]}
+                                    ortegaDate={selectedOrtegaDate}
+                                    realDate={selectedRealDate}
+                                    event={events[selectedRealDate]}
+                                    holiday={holidays[selectedShortDate]}
                                     closeWindow={() => this.closeEventsWindow()}
                                 /> :
                                 <MonthDays
@@ -106,7 +110,8 @@ export default class OrtegaCalendar extends Component {
                                     selectedMonth={selectedMonth}
                                     selectedYear={selectedYear}
                                     events={events}
-                                    openEventsWindow={(ortegaDate, realDate) => this.openEventsWindow(ortegaDate, realDate)}
+                                    holidays={holidays}
+                                    openEventsWindow={(ortegaDate, shortOrtegaDate, realDate) => this.openEventsWindow(ortegaDate, shortOrtegaDate, realDate)}
                                 />
                         }
                     </CSSTransition>
@@ -117,10 +122,12 @@ export default class OrtegaCalendar extends Component {
 }
 
 OrtegaCalendar.defaultProps = {
-    events: {}
+    events: {},
+    holidays: {}
 }
 
 OrtegaCalendar.propTypes = {
     ortegaDateTime: PropTypes.instanceOf(OrtegaDateTime),
-    events:         PropTypes.object
+    events:         PropTypes.object,
+    holidays:       PropTypes.object
 }

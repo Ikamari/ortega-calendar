@@ -22,6 +22,6 @@ export const dateTimeToTime = (dateTime) => {
     return `${hours > 9 ? '' : '0'}${hours}:${minutes > 9 ? '' : '0'}${minutes}:${seconds > 9 ? '' : '0'}${seconds}`
 }
 
-export const datePartsToDate = (day, month, year) => {
-    return `${day > 9 ? '' : '0'}${day}.${month > 9 ? '' : '0'}${month}.${year}`
+export const datePartsToDate = (day, month, year = null) => {
+    return `${day > 9 ? '' : '0'}${day}.${month > 9 ? '' : '0'}${month}${year ? `.${year}` : ''}`
 }
