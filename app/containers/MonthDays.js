@@ -28,6 +28,7 @@ export default class MonthDays extends Component {
                     isCurrentDate = currentDate === date,
                     hasEvent      = realDate in events,
                     hasHoliday    = shortDate in holidays
+
                 days.push(
                     <DayBlock
                         key            = {`calendar-day-${dayOfMonth}`}

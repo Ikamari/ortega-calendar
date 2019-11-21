@@ -1,3 +1,5 @@
+// Helpers
+import moment from 'moment'
 import { addDays, addHours, datePartsToDate } from './helpers/DateHelper'
 
 const ORTEGA_MONTHS = [
@@ -35,25 +37,39 @@ export default class OrtegaDatetime {
     endOfDayInRealTime
 
     constructor(ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', timeOffset = 0) {
+        if (timeOffset > 12 || timeOffset < -12) throw new Error('Установлен неправильный offset')
+
+        // Store configuration
+        this.initialOrtegaDate = ortegaInitialDate
+        this.initialRealDate   = realInitialDate
+        this.gameTimeOffset    = timeOffset
+        this.userTimeOffset    = (new Date()).getTimezoneOffset() / 60 * -1;
+
+        // Get and store d/m/y from initial Ortega date
         const ortegaInitialDateParts = ortegaInitialDate.split('.')
-        const realInitialDateParts   = realInitialDate.split('.')
+        this.initialDay   = Number(ortegaInitialDateParts[0])
+        this.initialMonth = Number(ortegaInitialDateParts[1])
+        this.initialYear  = Number(ortegaInitialDateParts[2])
 
-        this.initialOrtegaDate   = ortegaInitialDate
-        this.initialRealDate     = realInitialDate
-        this.initialDay          = Number(ortegaInitialDateParts[0])
-        this.initialMonth        = Number(ortegaInitialDateParts[1])
-        this.initialYear         = Number(ortegaInitialDateParts[2])
-        this.initialRealDateTime = new Date(Number(realInitialDateParts[2]), Number(realInitialDateParts[1]) - 1, Number(realInitialDateParts[0]))
-        this.timeOffset          = timeOffset
+        // Store real datetime with specified game time offset
+        this.initialRealDateTime = moment(realInitialDate, "DD.MM.YYYY h:mm:ss").utcOffset(timeOffset)
 
-        // Calculate in which time ortega day will start in real time
-        if (timeOffset > 12 || timeOffset < -12) throw 'По непонятным причинам кто-то выставил неправильный "оффсет"'
-        const hoursDifference = Math.abs(((new Date()).getTimezoneOffset() / 60 * -1) - timeOffset)
-        if (hoursDifference == 0) {
+        // Get difference between user's and game's time offset
+        const hoursDifference = this.userTimeOffset - this.gameTimeOffset;
+
+        debugger
+
+        // Calculate in which time ortega day will start in real time with user's time offset
+        if (hoursDifference === 0) {
             this.startOfDayInRealTime = '00:00'
             this.endOfDayInRealTime   = '23:59'
         } else {
-            const startOfDayInRealTime = 24 - hoursDifference
+            let startOfDayInRealTime = 24 + hoursDifference
+            if (startOfDayInRealTime > 24) {
+                startOfDayInRealTime -= 24;
+            } else {
+                // todo: make a workaround for case when user's time offers is lower than game's offset
+            }
             this.startOfDayInRealTime = `${startOfDayInRealTime > 9 ? '' : '0'}${startOfDayInRealTime}:00`
             this.endOfDayInRealTime   = `${startOfDayInRealTime - 1 > 9 ? '' : '0'}${startOfDayInRealTime - 1}:59`
         }
@@ -61,24 +77,39 @@ export default class OrtegaDatetime {
     }
 
     update() {
-        let currentDateTime = addHours(new Date(), this.timeOffset)
+        const currentUserDateTime = moment()
 
-        // Declare Ortega date on construct or update it when new day in reality has come
-        if (this.previouslyUsedRealDateTime === undefined || this.previouslyUsedRealDateTime.getDate() !== currentDateTime.getDate()) {
-            let days = OrtegaDatetime.diffInDays(currentDateTime, this.initialRealDateTime) + this.initialDay;
-            this.year  = this.initialYear  + Math.floor(days / 360)
-            days %= 360;
-            this.month = this.initialMonth + Math.floor(days / 30)
-            days %= 30;
-            this.day   = days
+        debugger
+
+        // Define Ortega date on construct or update it on new day in reality
+        if (this.currentDate === undefined || this.currentDate.date() !== currentUserDateTime.date()) {
+            let days = currentUserDateTime.diff(this.initialRealDateTime, "days") + this.initialDay;
+
+            this.year  = this.initialYear
+            if (days > 360) {
+                this.year += Math.floor(days / 360)
+                days %= 360;
+            }
+
+            this.month = this.initialMonth
+            if (days > 30) {
+                this.month += Math.floor(days / 30)
+                days %= 30;
+            }
+            if (this.month > 12) {
+                this.month = 1;
+                this.year++;
+            }
+
+            this.day = days || 1
         }
 
-        this.hours   = currentDateTime.getUTCHours()
-        this.minutes = currentDateTime.getUTCMinutes()
-        this.seconds = currentDateTime.getUTCSeconds()
-        currentDateTime = addHours(currentDateTime, this.timeOffset * -1)
+        this.currentDate = currentUserDateTime.date()
+        currentUserDateTime.utcOffset(this.gameTimeOffset)
 
-        this.previouslyUsedRealDateTime = currentDateTime
+        this.hours   = currentUserDateTime.hours()
+        this.minutes = currentUserDateTime.minutes()
+        this.seconds = currentUserDateTime.seconds()
     }
 
     getRealDateTime(returnDateTime = false) {
@@ -101,16 +132,17 @@ export default class OrtegaDatetime {
         return ORTEGA_DAYS[(this.day - 1) % 10]
     }
 
+    // todo: optimize me
     getTempa() {
         switch(this.hours) {
-            case this.hours <= 3:  {return ORTEGA_TEMPAS[0]}
-            case this.hours <= 6:  {return ORTEGA_TEMPAS[1]}
-            case this.hours <= 9:  {return ORTEGA_TEMPAS[2]}
-            case this.hours <= 12: {return ORTEGA_TEMPAS[3]}
-            case this.hours <= 15: {return ORTEGA_TEMPAS[4]}
-            case this.hours <= 18: {return ORTEGA_TEMPAS[5]}
-            case this.hours <= 21: {return ORTEGA_TEMPAS[6]}
-            case this.hours <= 24: {return ORTEGA_TEMPAS[7]}
+            case this.hours <= 3:  return ORTEGA_TEMPAS[0]
+            case this.hours <= 6:  return ORTEGA_TEMPAS[1]
+            case this.hours <= 9:  return ORTEGA_TEMPAS[2]
+            case this.hours <= 12: return ORTEGA_TEMPAS[3]
+            case this.hours <= 15: return ORTEGA_TEMPAS[4]
+            case this.hours <= 18: return ORTEGA_TEMPAS[5]
+            case this.hours <= 21: return ORTEGA_TEMPAS[6]
+            case this.hours <= 24: return ORTEGA_TEMPAS[7]
         }
         return ORTEGA_TEMPAS[this.hours / 3]
     }
@@ -126,7 +158,7 @@ export default class OrtegaDatetime {
     }
 
     toRealDateTime(ortegaDateTime, returnDateTime = false) {
-        return OrtegaDatetime.toRealDateTime(ortegaDateTime, this.initialOrtegaDate, this.initialRealDate, returnDateTime, this.timeOffset)
+        return OrtegaDatetime.toRealDateTime(ortegaDateTime, this.initialOrtegaDate, this.initialRealDate, returnDateTime, this.gameTimeOffset)
     }
 
     static toRealDateTime(ortegaDateTime, ortegaInitialDate = '01.01.72', realInitialDate = '01.10.2018', returnDateTime = false, timeOffset = 0) {
