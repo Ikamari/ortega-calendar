@@ -57,8 +57,6 @@ export default class OrtegaDatetime {
         // Get difference between user's and game's time offset
         const hoursDifference = this.userTimeOffset - this.gameTimeOffset;
 
-        debugger
-
         // Calculate in which time ortega day will start in real time with user's time offset
         if (hoursDifference === 0) {
             this.startOfDayInRealTime = '00:00'
@@ -79,10 +77,8 @@ export default class OrtegaDatetime {
     update() {
         const currentUserDateTime = moment()
 
-        debugger
-
         // Define Ortega date on construct or update it on new day in reality
-        if (this.currentDate === undefined || this.currentDate.date() !== currentUserDateTime.date()) {
+        if (this.currentDate === undefined || this.currentDate !== currentUserDateTime.date()) {
             let days = currentUserDateTime.diff(this.initialRealDateTime, "days") + this.initialDay;
 
             this.year  = this.initialYear
